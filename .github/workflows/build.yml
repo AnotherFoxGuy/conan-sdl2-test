@@ -8,10 +8,10 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - { name: "gcc", os: "ubuntu-latest", version: "10" }
-          - { name: "gcc", os: "ubuntu-latest", version: "9" }
-          - { name: "visual", os: "windows-latest", version: "16" }
-          - { name: "visual", os: "windows-latest", version: "15" }
+          - { name: "GCC", os: "ubuntu-latest", version: "10" }
+          - { name: "GCC", os: "ubuntu-latest", version: "9" }
+          - { name: "VISUAL", os: "windows-latest", version: "16" }
+          - { name: "VISUAL", os: "windows-latest", version: "15" }
         buildType: ["Debug", "Release"]
 
     steps:

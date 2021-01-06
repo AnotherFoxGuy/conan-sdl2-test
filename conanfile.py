@@ -1,38 +1,38 @@
-from conans import ConanFile, MSBuild, tools, AutoToolsBuildEnvironment
-from conans.tools import os_info
+from conans import ConanFile, CMake, tools
+from conans.tools import os_info, SystemPackageTool
 
 
-class freeimageConan(ConanFile):
-    name = "freeimage"
-    version = "3.18.0"
-    license = "GNU"
-    author = "Edgar (Edgar@AnotherFoxGuy.com)"
-    url = "https://github.com/AnotherFoxGuy/conan-freeimage"
-    description = "FreeImage is an Open Source library project for developers who would like to support popular graphics image formats like PNG, BMP, JPEG, TIFF and others as needed by today's multimedia applications."
+class OisConan(ConanFile):
+    name = "OIS"
+    version = "1.5"
+    license = "zlib"
+    author = "Edgar Edgar@AnotherFoxGuy.com"
+    url = "https://github.com/AnotherFoxGuy/conan-OIS/"
+    description = "Object oriented Input System"
+    topics = ("Input", "System")
     settings = "os", "compiler", "build_type", "arch"
+    generators = "cmake"
+
+    def system_requirements(self):
+        if os_info.is_linux:
+            if os_info.with_apt:
+                installer = SystemPackageTool()
+                installer.install("libx11-dev")
 
     def source(self):
-        tools.get("http://downloads.sourceforge.net/freeimage/FreeImage3180.zip")
+        git = tools.Git()
+        git.clone("https://github.com/wgois/OIS.git", "v1.5")
 
     def build(self):
-        with tools.chdir("./FreeImage"):
-            if os_info.is_windows:
-                msbuild = MSBuild(self)
-                msbuild.build("FreeImage.2017.sln", platforms={"x86": "Win32"})
-            else:
-                autotools = AutoToolsBuildEnvironment(self)
-                autotools.make()
+        cmake = CMake(self)
+        cmake.definitions['OIS_BUILD_DEMOS'] = 'OFF'
+        cmake.configure()
+        cmake.build()
 
     def package(self):
-        self.copy("*.h", dst="include", src="FreeImage/Dist", keep_path=False)
-        self.copy("*.lib", dst="lib", src="FreeImage/Dist", keep_path=False)
-        self.copy("*.dll", dst="bin", src="FreeImage/Dist", keep_path=False)
-        self.copy("*.so", dst="lib", src="FreeImage/Dist", keep_path=False)
-        self.copy("*.a", dst="lib", src="FreeImage/Dist", keep_path=False)
-        self.copy("*.lib", dst="lib", src="FreeImage/Source", keep_path=False)
-        self.copy("*.dll", dst="bin", src="FreeImage/Source", keep_path=False)
-        self.copy("*.so", dst="lib", src="FreeImage/Source", keep_path=False)
-        self.copy("*.a", dst="lib", src="FreeImage/Source", keep_path=False)
+        cmake = CMake(self)
+        cmake.install()
 
     def package_info(self):
+        self.cpp_info.includedirs = ['include', 'include/ois']
         self.cpp_info.libs = tools.collect_libs(self)
