@@ -25,6 +25,5 @@ jobs:
       - name: Run build.py
         env:
           CONAN_BUILD_TYPES: ${{ matrix.buildType }}
-        run: |
-          export CONAN_${{ matrix.compiler.name }}_VERSIONS="${{ matrix.compiler.version }}"
-          python build.py
+          CONAN_${{ matrix.compiler.name }}_VERSIONS: "${{ matrix.compiler.version }}"
+        run: python build.py
