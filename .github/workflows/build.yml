@@ -1,6 +1,12 @@
 name: Build conan package
 on: [push, pull_request]
 
+env:
+  CONAN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+  CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+  CONAN_CHANNEL: "testing"
+  CONAN_UPLOAD: "https://conan.cloudsmith.io/rigs-of-rods/deps/"
+
 jobs:
   package:
     name: ${{ matrix.compiler.name }} ${{ matrix.compiler.version }} ${{ matrix.buildType }} - ${{ matrix.compiler.os }}
